@@ -1,6 +1,6 @@
 import express from "express"
 import dotenv from "dotenv"
-import proxy from "express-http-proxy";
+import connectDB from "./config/connectDB.js";
 
 dotenv.config();
 
@@ -10,15 +10,12 @@ const app = express();
 
 app.use(express.json());
 
-
-app.use('/auth', proxy(process.env.AUTH_SERVICE_URL) )
-
 app.get('/', async (req, res) => {
-    return res.status(200).json({message : "setup gateway complete"})
-}) 
+    return res.status(200).json({message : "setup auth service complete"})
+})
 
 app.listen(port, async () => {
-
-    console.log("gateway started at: ", port);
-     
+    await connectDB();
+    console.log("auth service started at: ", port);
+    
 })
