@@ -5,9 +5,12 @@ const getCurrentUser = async () => {
         const { data } = await api.get('/api/me');
 
         console.log("data in gcu: ", data);
+        return data;
 
     } catch (error) {
-        log("error in get current user: ", error.message);
+        console.log("error in get current user: ", error.message);
+        return null;
+        
     }
 }
 
