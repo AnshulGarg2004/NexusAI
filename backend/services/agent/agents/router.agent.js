@@ -1,7 +1,7 @@
 import { getModel } from "../graph/llmModel.js"
 
-export const router = async(state) => {
-    const llm = await  getModel("router");
+export const router = async (state) => {
+    const llm = await getModel("router");
 
     const prompt = `You are an intelligent routing agent. Your only task is to determine which specialized agent should handle the user's request.
 
@@ -131,11 +131,13 @@ imageGen
 User Query : ${state.prompt}
 `
 
-}
 
-const response = await llm.invoke(prompt);
-console.log("response from rotuer: ", response);
+    const response = await llm.invoke(prompt);
+    console.log("response from rotuer: ", response);
 
-return {
-    ...state, agent : response.content.trim().toLowerCase()
+    return {
+        ...state, agent: response.content.trim().toLowerCase()
+    }
+
+
 }

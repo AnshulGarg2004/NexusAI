@@ -3,6 +3,8 @@ import Message from "../models/message.model.js";
 
 export const createConversation = async (req, res) => {
     try {
+        console.log(" m aaya hu");
+        
         const userId = req.headers['x-user-id'];
         console.log("user id in pwh: ", userId );
         const conversation = await Conversation.create({
@@ -18,9 +20,14 @@ export const createConversation = async (req, res) => {
 
 export const getConversations = async (req, res) => {
     try {
+        console.log(" m aaya hu");
+        
         const userId = req.headers['x-user-id'];
+        console.log("user id:", userId);
+        
         const conversation = await Conversation.find({userId}).sort({createdAt : -1});
-
+        console.log("fetched get conversations: ", conversation);
+        
         return res.status(200).json({message : "conversation fetched successfully", conversation});
     } catch (error) {
         console.log("error in geting conversation: ", error.message);

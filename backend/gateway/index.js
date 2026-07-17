@@ -21,6 +21,12 @@ app.use(cors({
 
 app.use(cookieParser());
 
+console.log({
+  AUTH_SERVICE_URL: process.env.AUTH_SERVICE_URL,
+  CHAT_SERVICE_URL: process.env.CHAT_SERVICE_URL,
+  AGENT_SERVICE_URL: process.env.AGENT_SERVICE_URL,
+});
+
 app.use(express.json());
 
 
