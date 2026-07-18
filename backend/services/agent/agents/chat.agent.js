@@ -1,3 +1,5 @@
+import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { getMemory } from "../config/memory.js";
 import { getModel } from "../graph/llmModel.js";
 
 export const chat = async (state) => {
@@ -20,22 +22,29 @@ export const chat = async (state) => {
     Never write heading and content in the same line.
     Never genrate large walls of text.
     `
-    
-    const resposne = await llm.invoke([
-        {
-            role : "system",
-            content : prompt
-        }, {
-            role : "human",
-            content : state.prompt
-        }
-    ]);
+    const memory = await getMemory(state.conversationId);
+    const historyMessages = Array.isArray(memory) ? memory : [];
 
-    console.log("res form chat : ", resposne);
+    const messages = [
+        new SystemMessage(prompt)
+    ];
+
+    historyMessages.forEach(msg => {
+        if (msg.role == "user") {
+            messages.push(new HumanMessage(msg.content))
+        }
+        if (msg.role == "assistant") {
+            messages.push(new AIMessage(msg.content))
+        }
+    });
+
+    messages.push(new HumanMessage(state.prompt));
+
+    const response = await llm.invoke(messages);
 
     return {
-        ...state, 
-        aiResponse : resposne.content
+        ...state,
+        aiResponse: response.content
     }
-    
+
 }

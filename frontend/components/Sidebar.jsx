@@ -57,7 +57,7 @@ function SideBar() {
                     <PanelRight />
                 </button>
 
-                <button onClick={() => handleCreateConversation()} className='w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none mb-1 cursor-pointer'>
+                <button onClick={() => dispatch(setSelectedConversation(null))} className='w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none mb-1 cursor-pointer'>
                     <Plus size={17} />
                 </button>
 
@@ -112,14 +112,14 @@ function SideBar() {
                         free
                     </span>
 
-                    <button onClick={() => handleCreateConversation()}
+                    <button onClick={() => dispatch(setSelectedConversation(null))}
                         className="flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer"
                     >
                         <PenSquare size={14} />
                     </button>
                 </div>
                 <div className='px-4 pt-4 pb-1'>
-                    <button onClick={() => handleCreateConversation()} className='w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-linear-to-r from-indigo-500 to-violet-700 rounded-xl py-[10px] border-none cursor-pointer hover:opacity-90 transition-opacity duration-150'>
+                    <button onClick={() => dispatch(setSelectedConversation(null))}  className='w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-linear-to-r from-indigo-500 to-violet-700 rounded-xl py-[10px] border-none cursor-pointer hover:opacity-90 transition-opacity duration-150'>
                         <Plus size={15} /> New Chat
                     </button>
 

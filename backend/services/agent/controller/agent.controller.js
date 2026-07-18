@@ -1,14 +1,17 @@
 import axios from "axios";
 import { graph } from "../graph/graph.js";
+import { addMessages } from "../config/memory.js";
+import redis from "../../../shared/redis/redis.js";
 
 export const agent = async (req, res) => {
     try {
         const { prompt, conversationId }  = req.body?.payload || req.body || {};
-
+     
         
         if (!prompt || !conversationId) {
             return res.status(400).json({ message: "prompt and conversationId are required" });
         }
+
         await axios.post(`${process.env.CHAT_SERVICE_URL}/save-message`, {
             conversationId, role : "user", content : prompt
         })
@@ -19,6 +22,10 @@ export const agent = async (req, res) => {
         })
         
         const response = result.aiResponse;
+        
+        await addMessages(conversationId, "user", prompt);
+        await addMessages(conversationId, "assistant", response);
+        
         await axios.post(`${process.env.CHAT_SERVICE_URL}/save-message`, {
             conversationId, role : "assistant", content : response
         })

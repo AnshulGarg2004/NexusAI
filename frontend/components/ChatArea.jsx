@@ -14,10 +14,14 @@ const ChatArea = () => {
      const dispatch = useDispatch();
     useEffect(() => {
         const getMsg = async () => {
-            console.log("dfghjk");
+            
             
             if(selectedConversation) {
 
+                if(selectedConversation.title === "New Chat") {
+
+                    return;
+                }
                 const data = await getMessage(selectedConversation._id); 
                 console.log("data in char area from get mess.js ", data);
                 dispatch(setMessages(data));
@@ -26,7 +30,7 @@ const ChatArea = () => {
         }
 
         getMsg();
-    }, [selectedConversation])
+    }, [selectedConversation?._id])
     return (
         <div className='flex-1 flex flex-col'>
             <Navbar />
