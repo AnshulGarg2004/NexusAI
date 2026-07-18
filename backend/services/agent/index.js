@@ -9,9 +9,9 @@ const port = process.env.PORT || 8003;
 
 const app = express();
 
-app.use('/', router)
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/', router)
 
 app.get('/', async (req, res) => {
     return res.status(200).json({message : "assalam-wale-kum from agent"})

@@ -17,6 +17,8 @@ function SideBar() {
     const dispatch = useDispatch();
 
     const { conversations, selectedConversation } = useSelector(state => state.conversation);
+    
+    
 
     const { userData } = useSelector(state => state.user);
 
@@ -31,6 +33,10 @@ function SideBar() {
             const data = await getConversation();
 
             dispatch(setConversations(data));
+
+            if (data?.length > 0 && !selectedConversation) {
+                dispatch(setSelectedConversation(data[0]));
+            }
         }
         getConv();
     }, [userData?._id]);
@@ -40,6 +46,8 @@ function SideBar() {
         console.log("data from create convo : ", data);
 
         dispatch(addConversation(data));
+        
+        if (data) dispatch(setSelectedConversation(data));
     }
 
     if (collapsed) {
@@ -134,7 +142,7 @@ function SideBar() {
                     {conversations.map((convo, ind) => {
                         const isActive = selectedConversation?._id === convo._id;
                         return (
-                            <div onClick={() => dispatch(setSelectedConversation(convo))}
+                            <div key={ind} onClick={() => dispatch(setSelectedConversation(convo))}
                                 className={`flex items-center gap-2.5 rounded-[10px] cursor-pointer px-3 mb-0 py-2.5 border duration-150 transition-colors ${isActive ? " bg-indigo-500/10 bg-indigo-500/[0.18]" : " bg-transparent border-transparent"}`}>
 
                                 <div className={` flex items-center justify-center shrink-0 w-[28px] h-[28px] rounded-lg duration-150 transition-colors ${isActive ? " bg-indigo-500/15 text-indigo-400" : " bg-white/[0.05] text-slate-500 "}`}>

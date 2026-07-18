@@ -10,8 +10,8 @@ export const createConversation = async (req, res) => {
         const conversation = await Conversation.create({
             userId : userId
         });
-
-        return res.status(200).json({message : "conversation created"});
+        
+        return res.status(200).json({message : "conversation created", conversation});
     } catch (error) {
         console.log("error in creating conversation: ", error.message);
         return res.status(500).json({message : "error in creating conversation"})

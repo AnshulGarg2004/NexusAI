@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import protect from "./middleware/auth.middleware.js";
 import getCurrentUser from "./controller/user.controller.js";
 import proxyWithUrl from "./utils/proxyWithHeader.util.js";
+import morgan from "morgan";
 
 
 dotenv.config();
@@ -13,6 +14,7 @@ dotenv.config();
 const port = process.env.PORT || 9000;
 
 const app = express();
+app.use(morgan("dev"))
 
 app.use(cors({
     origin : process.env.FRONTEND_URL,
