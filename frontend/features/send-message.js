@@ -11,7 +11,7 @@ export const sendMessage = async (payload) => {
 
     } catch (error) {
         console.log("error in send -mess: ", error.message);
-        return null;
+        return [];
 
     }
 }

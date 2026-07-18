@@ -26,8 +26,8 @@ const MessageArea = () => {
             ) : (
                 <div>
                     {messages.map((mess, i) => (
-                        <div>
-                            <MessageBubble role={mess.role} content={mess.content} />
+                        <div className=' space-y-5'>
+                            <MessageBubble role={mess.role} content={mess.content} images={mess.images || []} />
                         </div>
                     ))}
                 </div>

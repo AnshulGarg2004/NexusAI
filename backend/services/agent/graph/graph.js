@@ -51,7 +51,7 @@ workflow.addEdge("code", "__end__");
 workflow.addEdge("pdf", "__end__");
 workflow.addEdge("ppt", "__end__");
 workflow.addEdge("chat", "__end__");
-workflow.addEdge("search", "code");
+workflow.addEdge("search", "chat");
 
 
 

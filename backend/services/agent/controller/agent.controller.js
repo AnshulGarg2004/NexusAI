@@ -21,16 +21,25 @@ export const agent = async (req, res) => {
             conversationId,
             agent
         })
+
+        console.log("result of agent: ", result);
+        
         
         const response = result.aiResponse;
+
+        console.log("resp ie res.aires : ", response);
+        
         
         await addMessages(conversationId, "user", prompt);
         await addMessages(conversationId, "assistant", response);
         
         await axios.post(`${process.env.CHAT_SERVICE_URL}/save-message`, {
-            conversationId, role : "assistant", content : response
+            conversationId, role : "assistant", content : response, images : result.images
         })
-        return res.status(200).json(response)
+        return res.status(200).json({
+            answer : response,
+            images : result.images
+        })
         
     } catch (error) {
         console.log("agent error in chat: ", error.message);

@@ -5,8 +5,23 @@ import { getModel } from "../graph/llmModel.js";
 export const chat = async (state) => {
     const llm = await getModel("chat");
 
+    const searchContext = state.searchResults ? `
+    Web Search Results:
+
+    ${JSON.stringify(state.searchResults)}
+
+    Answer the user using only the above search results
+    ` : ''
+
     const prompt = `
     You are Zentra AI. An intelligent AI assitant.
+
+    ${searchContext}
+    If search context exists:
+
+    -Use search result to answer.
+    -Do not mention internal tools
+
 
     Rules: 
     For a simple question, greetings and short queries, respond naturally in plain text.
@@ -23,7 +38,9 @@ export const chat = async (state) => {
     Never genrate large walls of text.
     `
     const memory = await getMemory(state.conversationId);
-    const historyMessages = Array.isArray(memory) ? memory : [];
+    const historyMessages = Array.isArray(memory)
+        ? memory.filter((msg) => msg && typeof msg.content === "string" && (msg.role === "user" || msg.role === "assistant"))
+        : [];
 
     const messages = [
         new SystemMessage(prompt)
@@ -40,11 +57,16 @@ export const chat = async (state) => {
 
     messages.push(new HumanMessage(state.prompt));
 
-    const response = await llm.invoke(messages);
+    try {
+        const response = await llm.invoke(messages);
 
-    return {
-        ...state,
-        aiResponse: response.content
+        return {
+            ...state,
+            aiResponse: response.content
+        }
+    } catch (error) {
+        console.log("error in chat agent llm invoke: ", error.message);
+        throw error;
     }
 
 }

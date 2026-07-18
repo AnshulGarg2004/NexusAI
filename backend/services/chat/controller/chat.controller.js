@@ -37,12 +37,12 @@ export const getConversations = async (req, res) => {
 
 export const saveMessge = async (req, res) => {
     try {
-        const {conversationId, role, content} = req.body;
+        const {conversationId, role, content, images} = req.body;
         if(!conversationId || !role || !content) {
             return res.status(400).json({message : "missing data"})
         }
         const message = await Message.create({
-            conversationId : conversationId, role : role, content : content
+            conversationId : conversationId, role : role, content : content, images
         });
 
 
@@ -68,7 +68,7 @@ export const getMessages = async (req, res) => {
 export const updateConversation = async (req, res) => {
     try {
         const {id, title} = req.body;
-        const covnersation = await Conversation.findByIdAndUpdate(id, {title}, {new : true});
+        const conversation = await Conversation.findByIdAndUpdate(id, {title}, {new : true});
         return res.status(200).json({message : "conversation updated successfully", conversation}); 
 
     }
