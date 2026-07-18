@@ -5,7 +5,7 @@ import redis from "../../../shared/redis/redis.js";
 
 export const agent = async (req, res) => {
     try {
-        const { prompt, conversationId }  = req.body?.payload || req.body || {};
+        const { prompt, conversationId, agent }  = req.body?.payload || req.body || {};
      
         
         if (!prompt || !conversationId) {
@@ -18,7 +18,8 @@ export const agent = async (req, res) => {
         
         const result = await graph.invoke({
             prompt, 
-            conversationId
+            conversationId,
+            agent
         })
         
         const response = result.aiResponse;

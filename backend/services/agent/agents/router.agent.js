@@ -3,6 +3,10 @@ import { getModel } from "../graph/llmModel.js"
 export const router = async (state) => {
     const llm = await getModel("router");
 
+    if(state.agent && state.agent !== "auto") {
+        return {...state, agent : state.agent};
+    }
+
     const prompt = `You are an intelligent routing agent. Your only task is to determine which specialized agent should handle the user's request.
 
 Available agents:
@@ -133,7 +137,7 @@ User Query : ${state.prompt}
 
 
     const response = await llm.invoke(prompt);
-    console.log("response from rotuer: ", response);
+   
 
     return {
         ...state, agent: response.content.trim().toLowerCase()
