@@ -27,14 +27,14 @@ const MessageBubble = ({ role, content, images }) => {
     };
     return (
         <div className={`flex ${isUser ? " justify-end" : " justify-start"} `}>
-            <div className={`w-fit max-w-[92vw] md:max-w-[72%] px-4 py-2.5 rounded-2xl overflow-hidden break-words leading-relaxed *:
+            <div className={`w-fit max-w-[92vw] md:max-w-[72%] px-4 py-2.5 rounded-2xl overflow-hidden wrap-break-word leading-relaxed *:
                 ${isUser ? " bg-linear-to-r from-indigo-500 to-violet-700 text-white rounded-tr-sm" : " text-slate-200 rounded-tl-sm"}
                 `}>
 
                 {images.length > 0 && (
                     <div className='flex flex-wrap gap-3 mt-4'>
                         {images.map((image, i) => (
-                            <img onClick={() => setLightBox(img)} key={i} src={image} loading='lazy' onError={(e) => e.currentTarget.remove()}
+                            <img onClick={() => setLightBox(image)} key={i} src={image} loading='lazy' onError={(e) => e.currentTarget.remove()}
                                 className='w-40 h-28 rounded-xl object-cover border border-white/10 cursor-zoom-in hover:opacity-90 transition'
                             />
                         ))}
@@ -52,7 +52,7 @@ const MessageBubble = ({ role, content, images }) => {
                             <h3 className=' text-lg font-semibold mt-3 mb-2'>{children}</h3>
                         ),
                         p: ({ children }) => (
-                            <p className='mb-3 whitespace-pre-wrap  break-words'>{children}</p>
+                            <p className='mb-3 whitespace-pre-wrap wrap-break-word'>{children}</p>
                         ),
                         ul: ({ children }) => (
                             <ul className=' list-disc pl-5 space-y-1 my-2'> {children}</ul>
@@ -69,7 +69,7 @@ const MessageBubble = ({ role, content, images }) => {
                         ),
 
                         thead: ({ children }) => (
-                            <thead className="bg-white/[0.06] text-slate-200">
+                            <thead className="bg-white/6 text-slate-200">
                                 {children}
                             </thead>
                         ),
@@ -81,7 +81,7 @@ const MessageBubble = ({ role, content, images }) => {
                         ),
 
                         tr: ({ children }) => (
-                            <tr className="transition-colors hover:bg-white/[0.04]">
+                            <tr className="transition-colors hover:bg-white/4">
                                 {children}
                             </tr>
                         ),
@@ -114,12 +114,13 @@ const MessageBubble = ({ role, content, images }) => {
                             }
 
                             const lang = className.replace("language-", "");
+                            const label = lang.toUpperCase();
 
                             return (
-                                <div className="my-4 overflow-hidden rounded-xl border border-white/10 bg-[#0d1117] shadow-lg">
-                                    <div className="flex items-center justify-between border-b border-white/10 bg-[#161b22] px-4 py-2">
-                                        <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
-                                            {lang}
+                                <div className="my-5 overflow-hidden max-w-5xl rounded-[14px] border border-white/10 bg-[#0b0f14] shadow-2xl shadow-black/30">
+                                    <div className="flex items-center justify-between border-b border-white/10 bg-[#171b22] px-4 py-2.5">
+                                        <span className="text-xs font-medium uppercase tracking-[0.22em] text-slate-400">
+                                            {label}
                                         </span>
 
                                         <button
@@ -146,19 +147,27 @@ const MessageBubble = ({ role, content, images }) => {
                                         PreTag="div"
                                         showLineNumbers
                                         wrapLongLines={true}
+                                        lineProps={() => ({
+                                            style: {
+                                                display: "table-row",
+                                            },
+                                        })}
                                         customStyle={{
                                             margin: 0,
-                                            padding: "20px",
-                                            background: "#0d1117",
+                                            padding: "18px 20px 20px",
+                                            background: "#0b0f14",
                                             borderRadius: 0,
-                                            fontSize: "13px",
+                                            fontSize: "10px",
+                                            lineHeight: "2.7",
+                                            overflowX: "auto",
                                             fontFamily:
                                                 "'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace",
                                         }}
                                         lineNumberStyle={{
                                             color: "#6e7681",
-                                            minWidth: "2.5rem",
-                                            paddingRight: "16px",
+                                            minWidth: "2.75rem",
+                                            paddingRight: "18px",
+                                            userSelect: "none",
 
                                         }}
                                         codeTagProps={{

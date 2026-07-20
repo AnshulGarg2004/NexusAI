@@ -43,8 +43,13 @@ const ChatInput = () => {
         dispatch(addMessage({ role: "user", content: value.trim() }))
         setValue("");
         const data = await sendMessage(payload);
-        dispatch(addMessage({ role: "assistant", content: data.answer, images: data.images }))
-        console.log('data in chat inpy: ', data);
+        console.log('data in chat input: ', data);
+        dispatch(addMessage({
+            role: "assistant",
+            content: data.answer,
+            images: data.images || [],
+            artifacts: data.artifacts || []
+        }))
 
 
     }
@@ -90,14 +95,14 @@ const ChatInput = () => {
     ]
 
     return (
-        <div className=' border-t w-full overflow-hidden px-3 md:px-5 py-4 border-white/[0.06] bg-[#0d0f14]'>
-            <div className=' border flex flex-col gap-2 bg-white/[0.03] border-white/[0.07] rounded-2xl px-4 pt-3.5 pb-3 min-h-[210px]'>
+        <div className=' border-t w-full overflow-hidden px-3 md:px-5 py-4 border-white/6 bg-[#0d0f14]'>
+            <div className=' border flex flex-col gap-2 bg-white/3 border-white/7 rounded-2xl px-4 pt-3.5 pb-3 min-h-52.5'>
                 <div className='flex w-[80%] gap-2 pr-2 flex-wrap'>
                     {agents.map((agent) => {
                         const Icon = agent.icon;
                         const isActive = selectedAgent === agent.label
                         return (
-                            <div onClick={() => setSelectedAgent(agent.label)} className={` flex shrink-0 cursor-pointer inline-flex items-center px-3 py-2 gap-1.5 text-xs rounded-full border transition-all font-medium${isActive ? " bg-linear-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,0.35)]" : " bg-white/[0.03] text-slate-400 border-white/[0.06] hover:bg-white/[0.07]"}`}>
+                            <div onClick={() => setSelectedAgent(agent.label)} className={` flex shrink-0 cursor-pointer items-center px-3 py-2 gap-1.5 text-xs rounded-full border transition-all font-medium${isActive ? " bg-linear-to-r from-indigo-500 to-violet-600 text-white border-transparent shadow-[0_1px_8px_rgba(99,102,241,0.35)]" : " bg-white/3 text-slate-400 border-white/6 hover:bg-white/7"}`}>
                                 <Icon size={14} className={`${isActive ? " text-white" : " text-slate-500"}`} />
                                 {agent.label}
                             </div>
@@ -113,11 +118,11 @@ const ChatInput = () => {
                 <div className="mt-auto flex items-center justify-between">
                    
                     <div className="flex items-center gap-2">
-                        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/[0.06] hover:bg-white/[0.05] hover:text-slate-300">
+                        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/6 hover:bg-white/5 hover:text-slate-300">
                             <Paperclip size={17} />
                         </button>
 
-                        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/[0.06] hover:bg-white/[0.05] hover:text-slate-300">
+                        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/6 hover:bg-white/5 hover:text-slate-300">
                             <Mic size={17} />
                         </button>
                     </div>
@@ -126,8 +131,8 @@ const ChatInput = () => {
                         onClick={handleSendMessage}
                         disabled={!value.trim()}
                         className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-200 ${value.trim()
-                                ? "bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/20 hover:scale-105"
-                                : "bg-white/[0.05] text-slate-600 cursor-not-allowed"
+                                ? "bg-linear-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/20 hover:scale-105"
+                                : "bg-white/5 text-slate-600 cursor-not-allowed"
                             }`}
                     >
                         <Send size={17} />
