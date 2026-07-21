@@ -66,7 +66,10 @@ export const chat = async (state) => {
         }
     } catch (error) {
         console.log("error in chat agent llm invoke: ", error.message);
-        throw error;
+        return {
+            ...state,
+            aiResponse: "❌Failed to generate response"
+        }
     }
 
 }

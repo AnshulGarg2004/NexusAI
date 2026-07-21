@@ -1,7 +1,7 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3"
-import { s3Client } from "../config/s3"
+import { s3Client } from "../config/s3.js"
 
-const uploadToS3 = async (fileName, Buffer, contentType) => {
+export const uploadToS3 = async (fileName, Buffer, contentType) => {
     await s3Client.send(
         new PutObjectCommand({
             Bucket : process.env.BUCKET_NAME,

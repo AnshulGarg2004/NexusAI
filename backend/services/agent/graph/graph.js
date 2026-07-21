@@ -14,12 +14,14 @@ workflow.addNode("router", router );
 workflow.addNode("chat", chat);
 workflow.addNode("pdf", pdf)
 workflow.addNode("ppt", ppt);
-workflow.addNode("imageGen", imageGen);
+workflow.addNode("image", imageGen);
 workflow.addNode("search", search);
 workflow.addNode("code", code);
 
 workflow.addEdge("__start__", "router");
 workflow.addConditionalEdges("router", (state) => {
+    console.log("agentqwer: ", state.agent);
+    
     switch(state.agent) {
         case "chat":
             return "chat";
@@ -31,8 +33,8 @@ workflow.addConditionalEdges("router", (state) => {
             return "ppt";
         case "search":
             return "search";
-        case "imageGen":
-            return "imageGen";
+        case "image":
+            return "image";
         default :
             return "chat";
              
@@ -40,13 +42,13 @@ workflow.addConditionalEdges("router", (state) => {
 }, {
     chat : "chat",
     code : "code",
-    imageGen : "imageGen",
+    image : "image",
     pdf : "pdf",
     ppt : "ppt",
     search : "search"
 });
 
-workflow.addEdge("imageGen", "__end__");  
+workflow.addEdge("image", "__end__");  
 workflow.addEdge("code", "__end__");
 workflow.addEdge("pdf", "__end__");
 workflow.addEdge("ppt", "__end__");

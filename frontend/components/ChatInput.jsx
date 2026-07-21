@@ -118,7 +118,7 @@ const ChatInput = () => {
                     className='w-full flex-1 min-h-0 bg-transparent outline-none resize-none text-slate-200 placeholder:text-slate-600 leading-relaxed disabled:opacity-50 [scrollbar-widht:none] [&::-webkit-scrollbar]:hidden'
                 />
                 <div className="mt-auto flex items-center justify-between">
-                   
+
                     <div className="flex items-center gap-2">
                         <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/6 hover:bg-white/5 hover:text-slate-300">
                             <Paperclip size={17} />
@@ -133,8 +133,8 @@ const ChatInput = () => {
                         onClick={handleSendMessage}
                         disabled={!value.trim()}
                         className={`flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-200 ${value.trim()
-                                ? "bg-linear-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/20 hover:scale-105"
-                                : "bg-white/5 text-slate-600 cursor-not-allowed"
+                            ? "bg-linear-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/20 hover:scale-105"
+                            : "bg-white/5 text-slate-600 cursor-not-allowed"
                             }`}
                     >
                         <Send size={17} />
