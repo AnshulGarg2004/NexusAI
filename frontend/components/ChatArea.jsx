@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getMessage } from '../features/get-messages';
-import { setMessages } from '../src/redux/messageSlice';
+import { setArtifacts, setMessages } from '../src/redux/messageSlice';
 import Navbar from './Navbar';
 import MessageArea from './MessageArea';
 import ChatInput from './ChatInput';
@@ -25,6 +25,10 @@ const ChatArea = () => {
                 const data = await getMessage(selectedConversation._id); 
                 console.log("data in char area from get mess.js ", data);
                 dispatch(setMessages(data));
+                const latestWithArtifacts = [...data].reverse().find(
+                    (msg) => Array.isArray(msg.artifacts) && msg.artifacts.length > 0
+                );
+                dispatch(setArtifacts(latestWithArtifacts?.artifacts || []))
                 
             }
         }

@@ -33,13 +33,16 @@ export const agent = async (req, res) => {
         await addMessages(conversationId, "user", prompt);
         await addMessages(conversationId, "assistant", response);
         
+        const images = Array.isArray(result?.images) ? result.images : [];
+        const artifacts = Array.isArray(result?.artifacts) ? result.artifacts : [];
+
         await axios.post(`${process.env.CHAT_SERVICE_URL}/save-message`, {
-            conversationId, role : "assistant", content : response, images : result.images, artifacts : result.artifacts 
+            conversationId, role : "assistant", content : response, images, artifacts
         })
         return res.status(200).json({
             answer : response,
-            images : result.images,
-            artifacts : result.artifacts
+            images,
+            artifacts
         })
         
     } catch (error) {

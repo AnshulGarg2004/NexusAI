@@ -47,6 +47,13 @@ export const code = async (state) => {
         - Beautiful Spacing
         - Single page unless user asks otherwise
 
+        IMAGES:
+        =====================
+        Always use real unsplash images
+
+        Never use placeholders
+
+
         Return only valid JSON
 
         Schema : 
@@ -98,7 +105,8 @@ export const code = async (state) => {
                 {
                     id: Date.now(),
                     type: "Project",
-                    files: data.files || []
+                    files: data.files || [],
+                    title : state.prompt
                 }
             ]
 
