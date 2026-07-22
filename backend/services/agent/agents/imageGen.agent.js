@@ -8,7 +8,7 @@ export const imageGen = async (state) => {
 
     console.log("im in image aget");
     try {
-            const prompt = `
+        const prompt = `
    You are an elite AI image prompt engineer specializing in creating cinematic, photorealistic, production-quality prompts for modern image generation models (GPT Image, Flux, Midjourney, SDXL, Ideogram, etc.).
 
 Your task is to transform the user's idea into a single, highly detailed, visually rich image generation prompt.
@@ -69,23 +69,24 @@ Never change the core subject or introduce unrelated elements.
 The output should be one cohesive paragraph optimized for image generation.
     `;
 
-    const resp = await imageLLM.invoke(prompt);
-    const imagePrompt = resp.content.trim();
+        const resp = await imageLLM.invoke(prompt);
+        const imagePrompt = resp.content.trim();
 
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}`;
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}`;
 
-    const imageResp = await axios.get(imageUrl, {responseType :"arraybuffer"});
-    console.log("image response: ", imageResp);
-    
-    const buffer = Buffer.from(imageResp.data);
-    const fileName = `image-${Date.now()}.png`
+        const imageResp = await axios.get(imageUrl, { responseType: "arraybuffer" });
+        console.log("image response: ", imageResp);
 
-    await uploadToS3(fileName, buffer, "image/png");
+        const buffer = Buffer.from(imageResp.data);
+        const fileName = `image-${Date.now()}.png`
 
-    const downloadUrl = await getFromS3(fileName, 24*60*60);
+        await uploadToS3(fileName, buffer, "image/png");
 
-    return {...state, 
-       aiResponse : `
+        const downloadUrl = await getFromS3(fileName, 24 * 60);
+
+        return {
+            ...state,
+            aiResponse: `
 🎉 Image Generated Successfully!
 
 🖼️ **Your image is ready!**
@@ -99,12 +100,12 @@ The output should be one cohesive paragraph optimized for image generation.
 
 ✨ Enjoy your creation!`,
 
-    }
+        }
     } catch (error) {
         console.log("error in image creating: ", error.message);
 
-        return {...state, aiResponse : "Failed to generate Image"};
-        
+        return { ...state, aiResponse: "Failed to generate Image" };
+
     }
 
 
