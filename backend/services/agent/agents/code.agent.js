@@ -1,6 +1,10 @@
 import { getModel } from "../graph/llmModel.js"
+import { detectCredits } from "../utils/detectCredits.js";
 
 export const code = async (state) => {
+
+
+    await detectCredits(state.userId, "code");
     const intentLLM = await getModel("intent");
     const codeLLM = await getModel("code");
 

@@ -6,6 +6,8 @@ import { addMessage, setArtifacts } from '../src/redux/messageSlice';
 import { addConversation, setConversationTitle, setSelectedConversation } from '../src/redux/conversationSlice';
 import { createConversation } from '../features/create-conversation';
 import { updateConversation } from '../features/update-conversation';
+import getCurrentUser from '../features/getCurrentUser';
+import { setUserData } from '../src/redux/userSlice';
 
 const ChatInput = () => {
 
@@ -52,6 +54,9 @@ const ChatInput = () => {
             images: data?.images || [],
             artifacts
         }))
+
+        const user = await getCurrentUser();
+        dispatch(setUserData(user));
 
 
     }

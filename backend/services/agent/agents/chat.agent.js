@@ -1,11 +1,16 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { getMemory } from "../config/memory.js";
 import { getModel } from "../graph/llmModel.js";
+import { detectCredits } from "../utils/detectCredits.js";
 
 export const chat = async (state) => {
-    const llm = await getModel("chat");
 
-    const searchContext = state.searchResults ? `
+
+    try {
+        
+        const llm = await getModel("chat");
+
+        const searchContext = state.searchResults ? `
     Web Search Results:
 
     ${JSON.stringify(state.searchResults)}
@@ -13,7 +18,7 @@ export const chat = async (state) => {
     Answer the user using only the above search results
     ` : ''
 
-    const prompt = `
+        const prompt = `
     You are Zentra AI. An intelligent AI assitant.
 
     ${searchContext}
@@ -37,28 +42,27 @@ export const chat = async (state) => {
     Never write heading and content in the same line.
     Never genrate large walls of text.
     `
-    const memory = await getMemory(state.conversationId);
-    const historyMessages = Array.isArray(memory)
-        ? memory.filter((msg) => msg && typeof msg.content === "string" && (msg.role === "user" || msg.role === "assistant"))
-        : [];
+        const memory = await getMemory(state.conversationId);
+        const historyMessages = Array.isArray(memory)
+            ? memory.filter((msg) => msg && typeof msg.content === "string" && (msg.role === "user" || msg.role === "assistant"))
+            : [];
 
-    const messages = [
-        new SystemMessage(prompt)
-    ];
+        const messages = [
+            new SystemMessage(prompt)
+        ];
 
-    historyMessages.forEach(msg => {
-        if (msg.role == "user") {
-            messages.push(new HumanMessage(msg.content))
-        }
-        if (msg.role == "assistant") {
-            messages.push(new AIMessage(msg.content))
-        }
-    });
+        historyMessages.forEach(msg => {
+            if (msg.role == "user") {
+                messages.push(new HumanMessage(msg.content))
+            }
+            if (msg.role == "assistant") {
+                messages.push(new AIMessage(msg.content))
+            }
+        });
 
-    messages.push(new HumanMessage(state.prompt));
-
-    try {
+        messages.push(new HumanMessage(state.prompt));
         const response = await llm.invoke(messages);
+        await detectCredits(state.userId, "chat");
 
         return {
             ...state,

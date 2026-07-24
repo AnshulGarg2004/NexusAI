@@ -86,15 +86,63 @@ export const updateUserPayment = async (req, res) => {
 
         await user.save();
 
-        const sessionId =  await redis.get(`user-session-${user?._id}`)
+        const sessionId = await redis.get(`user-session-${user?._id}`);
         if (sessionId) {
-           await redis.set(`session-${sessionId}`, JSON.stringify(getUserSessionPayload(user)), "EX", 24 * 7 * 60 * 60);
+            await redis.set(`session-${sessionId}`, JSON.stringify(getUserSessionPayload(user)), "EX", 24 * 7 * 60 * 60);
         }
 
         return res.status(200).json({message : "user updated successfully", user});
     } catch (error) {
         console.log("err in user update payment control: ", error.message);
         return res.status(500).json({message : "update user payment error"})
+    }
+}
+
+export const detectCredits = async (req, res) => {
+    try {
+        const {userId, agent} = req.body;
+        const COST = {
+            chat : 1,
+            search : 5,
+            code : 10,
+            pdf : 10,
+            ppt : 10,
+            image : 10
+        };
+
+        const user = await User.findById(userId);
+
+        if(!user) {
+            return res.status(404).json({message : "user not found"});
+        }
+
+        const requredCredits = COST[agent]  || 1;
+
+        if(requredCredits > user.credits) {
+            return res.status(401).json({message : "not enough credits. Upgrade your Plan"})
+        }
+
+        user.credits -= requredCredits;
+
+        await user.save();
+
+        
+        const sessionId = await redis.get(`user-session-${user?._id}`);
+
+        if (sessionId) {
+            await redis.set(`session-${sessionId}`, JSON.stringify(getUserSessionPayload(user)), "EX", 24 * 7 * 60 * 60);
+        }
+
+        return res.status(200).json({
+            message: "credits deducted successfully",
+            credits: user.credits,
+            deducted: requredCredits
+        });
+
+    } catch (error) {
+        console.log("error in detect credits: ", error.message);
+        return res.status(500).json({message : "error in  detect credit"})
+        
     }
 }
 

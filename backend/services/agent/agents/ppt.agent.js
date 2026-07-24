@@ -5,6 +5,7 @@ import { uploadToS3 } from "../utils/uploadToS3.js";
 
 export const ppt = async (state) => {
     try {
+        
         const pptLLM = await getModel("ppt");
 
         const prompt = `
@@ -56,6 +57,8 @@ export const ppt = async (state) => {
 
         const pptBuffer = await uploadToS3(fileName, buffer, "application/vnd.openxmlformats-officedocument.presentationml.presentation");
         const pptUrl = await getFromS3(fileName, 24*60);
+
+        await detectCredits(state.userId, "ppt");
 
         return {
             ...state,

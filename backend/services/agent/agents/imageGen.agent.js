@@ -4,10 +4,11 @@ import { uploadToS3 } from "../utils/uploadToS3.js";
 import { getFromS3 } from "../utils/getfromS3.js";
 
 export const imageGen = async (state) => {
-    const imageLLM = await getModel("image");
-
-    console.log("im in image aget");
     try {
+        await detectCredits(state.userId, "image");
+        const imageLLM = await getModel("image");
+    
+        console.log("im in image aget");
         const prompt = `
    You are an elite AI image prompt engineer specializing in creating cinematic, photorealistic, production-quality prompts for modern image generation models (GPT Image, Flux, Midjourney, SDXL, Ideogram, etc.).
 

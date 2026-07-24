@@ -5,6 +5,7 @@ import { uploadToS3 } from "../utils/uploadToS3.js";
 
 export const pdf = async (state) => {
     try {
+
         const pdfLLM = await getModel("pdf");
         const prompt = `
 You are an expert technical writer, professional content strategist, and document designer.
@@ -79,7 +80,7 @@ ${state.prompt}
         await uploadToS3(fileName, pdfBuffer, "applicarion/pdf");
 
         const pdfUrl = await getFromS3(pdfBuffer, 24 * 60);
-
+        await detectCredits(state.userId, "pdf");
 
         return {
             ...state,
@@ -98,7 +99,7 @@ ${state.prompt}
 ✨ Enjoy your creation!`,
 
         }
- 
+
 
     } catch (error) {
         console.log("error in geenrating pdf");
