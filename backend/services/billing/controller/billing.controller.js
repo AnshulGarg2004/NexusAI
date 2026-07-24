@@ -18,6 +18,8 @@ export const createOrder = async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             mode: "payment",
             payment_method_types: ["card"],
+            success_url: `${frontendUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${frontendUrl}/?payment=cancelled`,
             line_items: [
                 {
                     price_data: {
@@ -61,31 +63,50 @@ export const createOrder = async (req, res) => {
     }
 };
 
-export const verifyPayment = async () => {
+export const verifyPayment = async (req, res) => {
     try {
-        const {stripeId, stripePaymentId, stripeSignature} = req.body;
+        const { sessionId } = req.body || {};
 
-
-        const generateSecret = crypto.createHmac("sha256", process.env.STRIPE_SECRET_KEY).update(`${stripeId}|${stripePaymentId}`).digest("hex");
-
-        if(generateSecret !== stripeSignature) {
-            return res.status(400).json({message : "payment verification failed"});
+        if (!sessionId) {
+            return res.status(400).json({ message: "checkout session id is required" });
         }
 
-        const payment = await Payment.findOne({orderId : stripeId});
-        if(!payment) {
-            return res.status(404).json({message : "payment not found"});
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        console.log("stripe checkout session payment status: ", session.payment_status);
+
+        if (session.payment_status !== "paid") {
+            return res.status(400).json({ message: "payment is not paid yet" });
+        }
+
+        const payment = await Payment.findOne({ orderId: sessionId });
+        if (!payment) {
+            return res.status(404).json({ message: "payment not found" });
+        }
+
+        if (payment.status === "paid") {
+            return res.status(200).json({ message: "payment already verified", payment });
         }
 
         payment.status = "paid";
-        payment.paymentId = stripePaymentId; 
+        payment.paymentId = session.payment_intent;
         await payment.save();
 
-        await axios.post(`${process.env.AUTH_SERVICE_URL}/update-plan`, {userId : payment.userId, plan : payment.plan, credits : payment.credits })
+        await axios.post(`${process.env.AUTH_SERVICE_URL}/update-plan`, {
+            userId: payment.userId,
+            plan: payment.plan,
+            credits: payment.credits
+        });
 
-        return res.status(200).json({message : "payment verified"});
+        console.log("stripe payment verified: ", {
+            sessionId,
+            userId: payment.userId,
+            plan: payment.plan,
+            credits: payment.credits
+        });
+
+        return res.status(200).json({ message: "payment verified", payment });
     } catch (error) {
         console.log("er in vrify url: ", error.message);
-        return res.status(500).json({message : "error in verifu url controller"});
+        return res.status(500).json({message : "error in verify url controller"});
     }
 }

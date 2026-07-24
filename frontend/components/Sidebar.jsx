@@ -8,17 +8,19 @@ import { addConversation, setConversations, setSelectedConversation } from '../s
 import { createConversation } from '../features/create-conversation';
 import { logout } from '../features/logout';
 import { setUserData } from '../src/redux/userSlice';
+import BillingDrawer from './BillingDrawer';
 
 function SideBar() {
 
     const [collapsed, setCollapsed] = useState(false);
-    const [imageError, setImageError] = useState(false)
+    const [imageError, setImageError] = useState(false);
+    const [billing, setBilling] = useState(false);
 
     const dispatch = useDispatch();
 
     const { conversations, selectedConversation } = useSelector(state => state.conversation);
-    
-    
+
+
 
     const { userData } = useSelector(state => state.user);
 
@@ -46,8 +48,13 @@ function SideBar() {
         console.log("data from create convo : ", data);
 
         dispatch(addConversation(data));
-        
+
         if (data) dispatch(setSelectedConversation(data));
+    }
+
+    const openBillingDrawer = (event) => {
+        event.stopPropagation();
+        setBilling(true);
     }
 
     if (collapsed) {
@@ -97,6 +104,7 @@ function SideBar() {
         )
     }
     return (
+        <>
         <div className='fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06]'>
             <div className='flex flex-col h-full'>
                 <div className='flex items-center gap-2.5 px-4 py-4 border-b border-white/[0.06]'>
@@ -119,7 +127,7 @@ function SideBar() {
                     </button>
                 </div>
                 <div className='px-4 pt-4 pb-1'>
-                    <button onClick={() => dispatch(setSelectedConversation(null))}  className='w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-linear-to-r from-indigo-500 to-violet-700 rounded-xl py-[10px] border-none cursor-pointer hover:opacity-90 transition-opacity duration-150'>
+                    <button onClick={() => dispatch(setSelectedConversation(null))} className='w-full flex items-center justify-center gap-2 text-sm font-medium text-white bg-linear-to-r from-indigo-500 to-violet-700 rounded-xl py-[10px] border-none cursor-pointer hover:opacity-90 transition-opacity duration-150'>
                         <Plus size={15} /> New Chat
                     </button>
 
@@ -189,6 +197,8 @@ function SideBar() {
 
                             <div className="flex items-center gap-1">
                                 <button
+                                    type="button"
+                                    onClick={openBillingDrawer}
                                     className="flex items-center justify-center w-8 h-8 rounded-lg text-yellow-500 hover:bg-white/10 transition-colors"
                                 >
                                     <Coins size={16} />
@@ -213,8 +223,9 @@ function SideBar() {
                 </div>
 
             </div>
-
         </div>
+        <BillingDrawer open={billing} onClose={() => setBilling(false)} />
+        </>
     )
 }
 
