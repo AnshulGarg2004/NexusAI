@@ -27,6 +27,7 @@ console.log({
   AUTH_SERVICE_URL: process.env.AUTH_SERVICE_URL,
   CHAT_SERVICE_URL: process.env.CHAT_SERVICE_URL,
   AGENT_SERVICE_URL: process.env.AGENT_SERVICE_URL,
+  BILLING_SERVICE_URL : process.env.BILLING_SERVICE_URL
 });
 
 app.use(express.json());
@@ -35,7 +36,7 @@ app.use(express.json());
 app.use('/api/auth', proxy(process.env.AUTH_SERVICE_URL) )
 app.use('/api/chat',protect, proxyWithUrl(process.env.CHAT_SERVICE_URL));
 app.use('/api/agent',protect, proxy(process.env.AGENT_SERVICE_URL));
-
+app.use('/api/billing',protect, proxyWithUrl(process.env.BILLING_SERVICE_URL));
 app.get('/api/me', protect, getCurrentUser);
 
 app.get('/', async (req, res) => {

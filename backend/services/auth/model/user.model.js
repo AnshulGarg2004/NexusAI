@@ -9,7 +9,20 @@ const userSchema = new mongoose.Schema({
         type : String
     },
     email : String,
-    avatar : String
+    avatar : String,
+    plan : {
+        type : String,
+        default : "free"
+    },
+    credits : {
+        type  :  Number,
+        default : 100
+    },
+    totlalCreadits : {
+        type : Number,
+        default : 100
+    },
+    planExpiredAt : Date
 }, {timestamps : true});
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
