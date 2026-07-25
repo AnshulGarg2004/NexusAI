@@ -2,7 +2,7 @@ import { Code2, FileText, Globe, Image, MessageSquare, Mic, Paperclip, Presentat
 import React, { useRef, useState } from 'react'
 import { sendMessage } from '../features/send-message';
 import { useDispatch, useSelector } from 'react-redux';
-import { addMessage, setArtifacts } from '../src/redux/messageSlice';
+import { addMessage, setArtifacts, setIsLoading } from '../src/redux/messageSlice';
 import { addConversation, setConversationTitle, setSelectedConversation } from '../src/redux/conversationSlice';
 import { createConversation } from '../features/create-conversation';
 import { updateConversation } from '../features/update-conversation';
@@ -20,6 +20,7 @@ const ChatInput = () => {
     const { messages } = useSelector(state => state.message)
 
     const handleSendMessage = async () => {
+        dispatch(setIsLoading(true))
         const title = value.trim().slice(0, 40);
 
         let conversation = selectedConversation;
@@ -43,12 +44,15 @@ const ChatInput = () => {
         formData.append("prompt", value.trim());
         formData.append("conversationId", conversation._id);
         formData.append("agent", selectedAgent.toLowerCase());
-        formData.append("file", selectedFile)
+        if (selectedFile) {
+            formData.append("file", selectedFile)
+        }
 
 
         dispatch(addMessage({ role: "user", content: value.trim() }))
         setValue("");
         const data = await sendMessage(formData);
+        dispatch(setIsLoading(false))
         console.log('data in chat input: ', data);
         setSelectedFile(null)
         const artifacts = Array.isArray(data?.artifacts) ? data.artifacts : [];

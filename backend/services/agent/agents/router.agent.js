@@ -3,21 +3,23 @@ import { getModel } from "../graph/llmModel.js"
 export const router = async (state) => {
     const llm = await getModel("router");
 
-    if(state.agent && state.agent !== "auto") {
-        return {...state, agent : state.agent};
+    if (state.agent && state.agent !== "auto") {
+        return { ...state, agent: state.agent };
     }
 
-    if(state.file.mimetype ==="application/pdf") {
-        return {
-            ...state,
-            agent  : "pdfRag"
+    if (state.file) {
+        if (state.file.mimetype === "application/pdf") {
+            return {
+                ...state,
+                agent: "pdfRag"
+            }
         }
-    }
 
-    if(state.file.mimetype.startsWith("image/")) {
-        return {
-            ...state, 
-            agent : "imageAnalyser"
+        if (state.file.mimetype.startsWith("image/")) {
+            return {
+                ...state,
+                agent: "imageAnalyser"
+            }
         }
     }
 
@@ -151,7 +153,7 @@ User Query : ${state.prompt}
 
 
     const response = await llm.invoke(prompt);
-   
+
 
     return {
         ...state, agent: response.content.trim().toLowerCase()
