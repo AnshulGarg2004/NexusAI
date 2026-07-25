@@ -1,6 +1,6 @@
 import { HumanMessage, isBase64ContentBlock, SystemMessage } from "@langchain/core/messages";
 import { getModel } from "../graph/llmModel.js";
-import fs from "fs";
+import fs from "fs/promises";
 import { detectCredits } from "../utils/detectCredits.js";
 
 export const imageAnalyser = async (state) => {
@@ -60,6 +60,6 @@ Rules:
             aiResponse : "❌Failed to analyse file"
         }
     } finally {
-        fs.unlink(state.file.path)
+      await  fs.unlink(state.file.path)
     }
 }

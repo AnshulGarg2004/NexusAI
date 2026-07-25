@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import  { PDFParse } from 'pdf-parse'
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
 import { getModel } from '../graph/llmModel.js';
@@ -66,6 +66,6 @@ Rules:
             aiResponse : "❌Failed to generte response"
         }
     } finally {
-        fs.unlinkSync(state.file.path);
+        await fs.unlinkSync(state.file.path);
     }
 }
