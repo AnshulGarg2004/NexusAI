@@ -7,6 +7,20 @@ export const router = async (state) => {
         return {...state, agent : state.agent};
     }
 
+    if(state.file.mimetype ==="application/pdf") {
+        return {
+            ...state,
+            agent  : "pdfRag"
+        }
+    }
+
+    if(state.file.mimetype.startsWith("image/")) {
+        return {
+            ...state, 
+            agent : "imageAnalyser"
+        }
+    }
+
     const prompt = `You are an intelligent routing agent. Your only task is to determine which specialized agent should handle the user's request.
 
 Available agents:

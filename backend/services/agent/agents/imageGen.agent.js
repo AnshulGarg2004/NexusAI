@@ -2,10 +2,11 @@ import { getModel } from "../graph/llmModel.js"
 import axios from 'axios'
 import { uploadToS3 } from "../utils/uploadToS3.js";
 import { getFromS3 } from "../utils/getfromS3.js";
+import { detectCredits } from "../utils/detectCredits.js";
 
 export const imageGen = async (state) => {
     try {
-        await detectCredits(state.userId, "image");
+        
         const imageLLM = await getModel("image");
     
         console.log("im in image aget");
@@ -84,6 +85,8 @@ The output should be one cohesive paragraph optimized for image generation.
         await uploadToS3(fileName, buffer, "image/png");
 
         const downloadUrl = await getFromS3(fileName, 24 * 60);
+
+        await detectCredits(state.userId, "image");
 
         return {
             ...state,

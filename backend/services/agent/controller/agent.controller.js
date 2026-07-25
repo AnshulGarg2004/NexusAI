@@ -6,7 +6,7 @@ import redis from "../../../shared/redis/redis.js";
 export const agent = async (req, res) => {
     try {
         const { prompt, conversationId, agent }  = req.body?.payload || req.body || {};
-     
+        const file = req.file;
         const userId = req.headers['x-user-id']
         if (!prompt || !conversationId) {
             return res.status(400).json({ message: "prompt and conversationId are required" });
@@ -20,7 +20,8 @@ export const agent = async (req, res) => {
             prompt, 
             conversationId,
             agent,
-            userId
+            userId,
+            file
         })
 
         console.log("result of agent: ", result);
