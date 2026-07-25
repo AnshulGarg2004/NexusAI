@@ -132,7 +132,7 @@ function SideBar() {
                         </span>
 
                         <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full tracking-wide">
-                            free
+                            {userData?.plan || "Free" }
                         </span>
 
                         <button onClick={() => dispatch(setSelectedConversation(null))}
@@ -206,7 +206,7 @@ function SideBar() {
                                         {userData?.name || "User"}
                                     </p>
                                     <p className="text-xs text-slate-500">
-                                        Free Plan
+                                        {`${userData?.plan}` || "Free Plan"}
                                     </p>
                                 </div>
 
