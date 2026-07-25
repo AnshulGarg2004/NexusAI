@@ -2,11 +2,13 @@ import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages
 import { getMemory } from "../config/memory.js";
 import { getModel } from "../graph/llmModel.js";
 import { detectCredits } from "../utils/detectCredits.js";
+import { checkLimit } from "../config/rateLimit.js";
 
 export const chat = async (state) => {
 
 
     try {
+        await checkLimit(state.userId, "chat")
         
         const llm = await getModel("chat");
 

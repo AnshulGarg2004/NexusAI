@@ -4,10 +4,12 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
 import { getModel } from '../graph/llmModel.js';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { detectCredits } from '../utils/detectCredits.js';
+import { checkLimit } from '../config/rateLimit.js';
 
 
 export const pdfRag = async(state) => {
     try {
+        await checkLimit(state.userId, "pdf")
         const buffer = fs.readFileSync(state.file.path);
         const pdf = new PDFParse({
             data : buffer

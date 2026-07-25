@@ -1,14 +1,17 @@
+import { checkLimit } from "../config/rateLimit.js";
 import { getModel } from "../graph/llmModel.js"
 import { detectCredits } from "../utils/detectCredits.js";
 
 export const code = async (state) => {
 
+    try {
 
-    const intentLLM = await getModel("intent");
-    const codeLLM = await getModel("code");
+        await checkLimit(state.userId, "code")
+        const intentLLM = await getModel("intent");
+        const codeLLM = await getModel("code");
 
-    const intentRes = await intentLLM.invoke(
-        `
+        const intentRes = await intentLLM.invoke(
+            `
         You are an intent classifier.
         Return only one of the values:
         Code_Generation
@@ -21,15 +24,15 @@ export const code = async (state) => {
 
         User Request: ${state.prompt}
         `
-    )
+        )
 
-    const intent = intentRes.content;
+        const intent = intentRes.content;
 
-    console.log("intent: ", intent);
+        console.log("intent: ", intent);
 
-    if (intent === "Code_Generation") {
+        if (intent === "Code_Generation") {
 
-        const prompt = `
+            const prompt = `
         Default stack 
         -HTML
         - CSS 
@@ -90,35 +93,35 @@ export const code = async (state) => {
         User Request: ${state.prompt}
 
         `
-        const res = await codeLLM.invoke(prompt);
+            const res = await codeLLM.invoke(prompt);
 
-        console.log("ress from code agent: ", res.content);
+            console.log("ress from code agent: ", res.content);
 
-        const raw = res.content.replace(/```json/gi, "")
-            .replace(/```/g, "")
-            .trim();
+            const raw = res.content.replace(/```json/gi, "")
+                .replace(/```/g, "")
+                .trim();
 
             const data = JSON.parse(raw);
 
             console.log("data from code gen json wala: ", data);
-            
-        return {
-            ...state, aiResponse: "code Generated Successfully",
-            artifacts: [
-                {
-                    id: Date.now(),
-                    type: "Project",
-                    files: data.files || [],
-                    title : state.prompt
-                }
-            ]
+
+            return {
+                ...state, aiResponse: "code Generated Successfully",
+                artifacts: [
+                    {
+                        id: Date.now(),
+                        type: "Project",
+                        files: data.files || [],
+                        title: state.prompt
+                    }
+                ]
 
 
+            }
         }
-    }
 
-    const res = await codeLLM.invoke(
-        `
+        const res = await codeLLM.invoke(
+            `
         The User's Request is ${intent}
 
         Return Markdown Only
@@ -143,16 +146,21 @@ export const code = async (state) => {
         User Request: ${state.prompt}
 
         `
-    )
+        )
 
-    await detectCredits(state.userId, "code");
-    const data = res.content;
-    console.log("data from other code gen: ", data);
-    return {
-        ...state,
-        aiResponse: data,
-        artifacts: []
+        await detectCredits(state.userId, "code");
+        const data = res.content;
+        console.log("data from other code gen: ", data);
+        return {
+            ...state,
+            aiResponse: data,
+            artifacts: []
+        }
+    } catch (error) {
+        return {
+            ...state,
+            aiResponse: error?.data?.message ||"❌Failed to generate code"
+        }
     }
-
 
 }

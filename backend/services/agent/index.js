@@ -10,6 +10,17 @@ const port = process.env.PORT || 8003;
 const app = express();
 
 app.use(express.json());
+
+app.use((error, req, res, next) => {
+    console.log(error);
+
+    if(error.status) {
+        return res.status(error.status).json(error.data)
+    }
+    return res.status(500).json({message: `agent error ${error}`})
+    
+})
+
 app.use(express.urlencoded({ extended: true }));
 app.use('/', router)
 

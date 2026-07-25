@@ -1,11 +1,13 @@
+import { checkLimit } from "../config/rateLimit.js";
 import { getModel } from "../graph/llmModel.js";
+import { detectCredits } from "../utils/detectCredits.js";
 import { generatePDF } from "../utils/generatePdf.js";
 import { getFromS3 } from "../utils/getfromS3.js";
 import { uploadToS3 } from "../utils/uploadToS3.js";
 
 export const pdf = async (state) => {
     try {
-
+        await checkLimit(state.userId, "pdf")
         const pdfLLM = await getModel("pdf");
         const prompt = `
 You are an expert technical writer, professional content strategist, and document designer.
@@ -106,7 +108,7 @@ ${state.prompt}
 
         return {
             ...state,
-            aiResponse: "❌Failed to generate pdf"
+            aiResponse: error?.data?.message ||"❌Failed to generate pdf"
         }
 
     }

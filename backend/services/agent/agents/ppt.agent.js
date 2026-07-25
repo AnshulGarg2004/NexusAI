@@ -1,11 +1,13 @@
+import { checkLimit } from "../config/rateLimit.js";
 import { getModel } from "../graph/llmModel.js"
+import { detectCredits } from "../utils/detectCredits.js";
 import { generatePPT } from "../utils/generatePPT.js";
 import { getFromS3 } from "../utils/getfromS3.js";
 import { uploadToS3 } from "../utils/uploadToS3.js";
 
 export const ppt = async (state) => {
     try {
-        
+        await checkLimit(state.userId, "ppt")
         const pptLLM = await getModel("ppt");
 
         const prompt = `
@@ -79,7 +81,7 @@ export const ppt = async (state) => {
         console.log("error in ppt agent: ", error.message);
         return {
             ...state,
-            aiResponse : "❌ Failed to Generate PPT"
+            aiResponse : error?.data?.message || "❌ Failed to Generate PPT"
         }
                
     }

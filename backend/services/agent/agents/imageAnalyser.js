@@ -2,9 +2,12 @@ import { HumanMessage, isBase64ContentBlock, SystemMessage } from "@langchain/co
 import { getModel } from "../graph/llmModel.js";
 import fs from "fs/promises";
 import { detectCredits } from "../utils/detectCredits.js";
+import { checkLimit } from "../config/rateLimit.js";
 
 export const imageAnalyser = async (state) => {
     try {
+
+        await checkLimit(state.userId, "image")
         const imageAnalyserLLM = await getModel("imageAnalyser");
 
         const imageBuffer = await fs.readFile(state.file);
@@ -57,7 +60,7 @@ Rules:
         console.log("error in image Analyser: ", error.message);
         return {
             ...state,
-            aiResponse : "❌Failed to analyse file"
+            aiResponse : error?.data?.message || "❌Failed to analyse file"
         }
     } finally {
       await  fs.unlink(state.file.path)

@@ -3,10 +3,11 @@ import axios from 'axios'
 import { uploadToS3 } from "../utils/uploadToS3.js";
 import { getFromS3 } from "../utils/getfromS3.js";
 import { detectCredits } from "../utils/detectCredits.js";
+import { checkLimit } from "../config/rateLimit.js";
 
 export const imageGen = async (state) => {
     try {
-        
+        await checkLimit(state.userId, 'image')
         const imageLLM = await getModel("image");
     
         console.log("im in image aget");
@@ -108,7 +109,7 @@ The output should be one cohesive paragraph optimized for image generation.
     } catch (error) {
         console.log("error in image creating: ", error.message);
 
-        return { ...state, aiResponse: "Failed to generate Image" };
+        return { ...state, aiResponse: error?.data?.message ||"Failed to generate Image" };
 
     }
 

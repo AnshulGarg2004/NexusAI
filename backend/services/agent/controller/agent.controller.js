@@ -3,7 +3,7 @@ import { graph } from "../graph/graph.js";
 import { addMessages } from "../config/memory.js";
 import redis from "../../../shared/redis/redis.js";
 
-export const agent = async (req, res) => {
+export const agent = async (req, res, next) => {
     try {
         const { prompt, conversationId, agent }  = req.body?.payload || req.body || {};
         const file = req.file;
@@ -49,7 +49,7 @@ export const agent = async (req, res) => {
         
     } catch (error) {
         console.log("agent error in chat: ", error.message);
-        return res.status(500).json({message : "error in chat agent"})
+        next(error)
         
     }
 }

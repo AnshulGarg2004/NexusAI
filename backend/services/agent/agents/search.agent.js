@@ -1,9 +1,10 @@
+import { checkLimit } from "../config/rateLimit.js";
 import { searchTool } from "../config/tavily.js"
 import { detectCredits } from "../utils/detectCredits.js";
 
 export const search = async (state) => {
     try {
-        
+        await checkLimit(state.userId, "search")
         const results = await searchTool.invoke({
             query : state.prompt
         })
