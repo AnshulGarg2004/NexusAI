@@ -50,6 +50,7 @@ const ChatInput = () => {
         setValue("");
         const data = await sendMessage(formData);
         console.log('data in chat input: ', data);
+        setSelectedFile(null)
         const artifacts = Array.isArray(data?.artifacts) ? data.artifacts : [];
         dispatch(setArtifacts(artifacts));
         dispatch(addMessage({
@@ -120,6 +121,34 @@ const ChatInput = () => {
                         )
                     })}
                 </div>
+
+                {selectedFile && (
+                    <div className=' my-3'>
+                        <div className=' inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2'>
+                            {
+                                selectedFile.type === "application/pdf" ? <FileText size={16} className='text-red-400' />
+                                    : selectedFile.type.startsWith("image/") && <img src={URL.createObjectURL(selectedFile)}
+                                        className=' h-10 w-10 rounded-xl object-cover mt-3'
+                                    />
+                            }
+
+                            <div>
+                                <p className='text-xs text-white'>{selectedFile?.name}</p>
+                                <p className='text-[10px] text-slate-500'>{Math.ceil(selectedFile.size)}kb</p>
+
+                            </div>
+                            <button onClick={() => {
+                                setSelectedFile(null);
+                                fileRef.current.value = "";
+                            }} className=' ml-2 '>
+                                <X size={14} className=' text-slate-500 hover:text-white' />
+                            </button>
+
+
+                        </div>
+
+                    </div>
+                )}
                 <textarea
                     value={value}
                     onChange={(e) => (setValue(e.target.value))}
@@ -130,8 +159,8 @@ const ChatInput = () => {
 
                     <div className="flex items-center gap-2">
                         <input type='file' accept='.pdf, image/*' hidden ref={fileRef} onChange={(e) => {
-                            const file = e.target.files[0]; 
-                            if(file) {
+                            const file = e.target.files[0];
+                            if (file) {
                                 setSelectedFile(file);
                             }
                         }} />
