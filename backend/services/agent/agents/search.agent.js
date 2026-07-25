@@ -1,4 +1,5 @@
 import { searchTool } from "../config/tavily.js"
+import { detectCredits } from "../utils/detectCredits.js";
 
 export const search = async (state) => {
     try {

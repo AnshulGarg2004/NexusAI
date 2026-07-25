@@ -30,6 +30,8 @@ export const getModel = async (agent) => {
             return groq;
         case "code" :
             return codeModel;
+            case "imageAnalyser" :
+                return gemini
         default:
             return groq;
     }
