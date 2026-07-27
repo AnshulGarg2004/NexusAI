@@ -10,7 +10,7 @@ export const imageAnalyser = async (state) => {
         await checkLimit(state.userId, "image")
         const imageAnalyserLLM = await getModel("imageAnalyser");
 
-        const imageBuffer = await fs.readFile(state.file);
+        const imageBuffer = await fs.readFile(state.file.path);
         const image = imageBuffer.toString("base64");
 
         const messages = [

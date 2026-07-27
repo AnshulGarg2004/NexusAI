@@ -10,17 +10,21 @@ if(!fs.existsSync(uploadDir)) {
 }
 
 const storage = multer.diskStorage({
+    
+    
     destination(req, file, cb) {
+        
         cb(null, uploadDir);
     },
-
+    
     filename(req, file, cb) {
         cb(null, `${Date.now}-${file.originalname}`);
     }
 });
 
 const fileFilter = (req, file, cb) => {
-    if(file.mimetype == "applicatioon/pdf" || file.mimetype.startsWith("image/")) {
+    console.log("file: ", file);
+    if(file.mimetype == "application/pdf" || file.mimetype.startsWith("image/")) {
         cb(null ,true);
     }
     else {

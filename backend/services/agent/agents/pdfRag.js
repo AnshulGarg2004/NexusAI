@@ -1,14 +1,17 @@
-import fs from 'fs/promises'
+import fs from 'fs'
 import  { PDFParse } from 'pdf-parse'
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
 import { getModel } from '../graph/llmModel.js';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { detectCredits } from '../utils/detectCredits.js';
 import { checkLimit } from '../config/rateLimit.js';
+import { vectorStoreDb } from '../config/vectorDB.js';
 
 
 export const pdfRag = async(state) => {
     try {
+        console.log("file that came: ", state.file);
+        
         await checkLimit(state.userId, "pdf")
         const buffer = fs.readFileSync(state.file.path);
         const pdf = new PDFParse({
@@ -18,13 +21,17 @@ export const pdfRag = async(state) => {
         const result = await pdf.getText();
 
         const text = result.text;
+        console.log("text :", text);
+        
 
         const splitter = new RecursiveCharacterTextSplitter({
             chunkOverlap : 100,
             chunkSize : 300
         });
 
-        const docs = splitter.createDocuments([text]);
+        const docs = await splitter.createDocuments([text]);
+        console.log("docs: ", docs);
+        
         const collectionName = `pdf-${Date.now()}`;
 
         const store = await vectorStoreDb(docs, collectionName);
@@ -32,6 +39,9 @@ export const pdfRag = async(state) => {
         const relevantDocs = await store.similaritySearch(state.prompt, 5);
 
         const context = relevantDocs.map(c => c.pageContent).join('\n\n');
+
+        console.log("context : ", context);
+        
 
         const llm = await getModel("pdfRag");
 
