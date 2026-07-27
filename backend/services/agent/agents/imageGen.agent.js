@@ -107,6 +107,10 @@ The output should be one cohesive paragraph optimized for image generation.
 
         }
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("error in image creating: ", error.message);
 
         return { ...state, aiResponse: error?.data?.message ||"Failed to generate Image" };

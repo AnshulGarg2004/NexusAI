@@ -10,6 +10,12 @@ const port = process.env.PORT || 8003;
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/', router)
+
+app.get('/', async (req, res) => {
+    return res.status(200).json({message : "assalam-wale-kum from agent"})
+})
 
 app.use((error, req, res, next) => {
     console.log(error);
@@ -20,13 +26,6 @@ app.use((error, req, res, next) => {
     return res.status(500).json({message: `agent error ${error}`})
     
 })
-
-app.use(express.urlencoded({ extended: true }));
-app.use('/', router)
-
-app.get('/', async (req, res) => {
-    return res.status(200).json({message : "assalam-wale-kum from agent"})
-}) 
 
 app.listen(port, async () => {
     await connectDB();

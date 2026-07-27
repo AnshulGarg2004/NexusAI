@@ -1,4 +1,4 @@
-import redis from "../../../shared/redis/redis";
+import redis from "../../../shared/redis/redis.js";
 
 const Limits = {
     chat : 20,
@@ -22,7 +22,7 @@ export const checkLimit = async (userId, agent) => {
 
     const ttl = await redis.ttl(key);
 
-    if(ttl > maxLimit) {
+    if(count > maxLimit) {
         const minutes = Math.floor(ttl/60);
         const secs = Math.floor(ttl % 60);
         const time = minutes > 0 ? `${minutes}m : ${secs}s` : `${secs}s`;
@@ -43,7 +43,7 @@ export const checkLimit = async (userId, agent) => {
 
 
     return {
-        remaining : maxLimit - count,
+        remaining : Math.max(maxLimit - count, 0),
         limit : maxLimit
     }
    

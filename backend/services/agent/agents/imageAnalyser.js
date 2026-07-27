@@ -57,6 +57,10 @@ Rules:
         }
         
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("error in image Analyser: ", error.message);
         return {
             ...state,

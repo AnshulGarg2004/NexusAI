@@ -13,6 +13,10 @@ export const search = async (state) => {
         await detectCredits(state.userId, "search");
         return {...state, searchResults : results, images : results.images}
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("err in fetching res from tavily: ", error.message);
         return {...state, searchResults : [], images : []};
     }

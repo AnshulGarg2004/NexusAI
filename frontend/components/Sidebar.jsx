@@ -114,7 +114,7 @@ function SideBar() {
                 <div onClick={() => setMobileOpen(false)} className=' lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm' />
             }
 
-            <div className={`fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06] transition-transform duration-300 ${mobileOpen ? " translate-x-0" : " translate-x-full lg:translate-x-0"}`}>
+            <div className={`fixed lg:static inset-y-0 left-0 z-50 w-[270px] h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06] transition-transform duration-300 ${mobileOpen ? " translate-x-0" : " -translate-x-full lg:translate-x-0"}`}>
 
                 <div className='flex flex-col h-full'>
                     <div className='flex items-center gap-2.5 px-4 py-4 border-b border-white/[0.06]'>

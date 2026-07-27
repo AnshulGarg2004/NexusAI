@@ -78,6 +78,10 @@ export const ppt = async (state) => {
         }
         
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("error in ppt agent: ", error.message);
         return {
             ...state,

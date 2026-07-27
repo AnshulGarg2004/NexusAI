@@ -71,6 +71,10 @@ export const chat = async (state) => {
             aiResponse: response.content
         }
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("error in chat agent llm invoke: ", error.message);
         return {
             ...state,

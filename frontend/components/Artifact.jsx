@@ -122,21 +122,21 @@ const Artifact = () => {
         return "plaintext";
     };
 
-    const PanelContent = ({onClose}) => {
+    const PanelContent = ({ onClose }) => {
         return (
             <>
                 {!collapsed ? (
                     <div className="flex h-full min-w-0 flex-col">
                         <div className="flex h-14 shrink-0 items-center gap-3 border-b border-white/[0.06] px-3">
                             <button
-                                onClick={onClose() ?? (() => setCollapsed(true))}
+                                onClick={onClose ?? (() => setCollapsed(true))}
                                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-none bg-transparent text-slate-500 transition-colors duration-150 hover:bg-white/[0.05] hover:text-slate-200 cursor-pointer"
                                 aria-label="Collapse artifacts panel"
                             >
-                               {onClose ? <X size={16}/> : <PanelRightClose size={16} />} 
+                                {onClose ? <X size={16} /> : <PanelRightClose size={16} />}
                             </button>
 
-                            <div className="flex h-8 min-w-0 flex-1 items-center gap-2">
+                            <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
                                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-indigo-500/20 bg-indigo-500/10">
                                     <Code2 size={13} className="text-indigo-400" />
                                 </div>
@@ -228,14 +228,14 @@ const Artifact = () => {
                         <div className="flex h-14 items-center justify-center border-b border-white/[0.06]">
                             <button
                                 onClick={() => setCollapsed(false)}
-                                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-white/[0.05] hover:text-slate-200"
+                                className="flex h-8 w-8 mr-4 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-white/[0.05] hover:text-slate-200"
                                 aria-label="Collapse artifacts panel"
                             >
                                 <PanelRightOpen size={16} />
                             </button>
                         </div>
 
-                        <div className="flex flex-1 items-center justify-center overflow-hidden">
+                        <div className="flex flex-1 mr-4 items-center justify-center overflow-hidden">
                             <span
                                 style={{
                                     writingMode: "vertical-rl",
@@ -258,7 +258,7 @@ const Artifact = () => {
 
     return (
         <>
-            <button className=" lg:hidden fixed bottom-24  right-4 z-40 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-medium shadow-lg shadow-indigo-500/20 border-none cursor-pointer transition-colors duration-150">
+            <button onClick={() => setMobileOpen(true)} className=" lg:hidden fixed bottom-24  right-4 z-40 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-medium shadow-lg shadow-indigo-500/20 border-none cursor-pointer transition-colors duration-150">
                 <Code2 size={13} /> View Code
             </button>
 
@@ -270,18 +270,24 @@ const Artifact = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            onClick={() => setMobileOpen(false)} className=" lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                            onClick={() => setMobileOpen(false)}
+                            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
                         />
-
-                        <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.25, ease: "easeInOut" }} className=" lg:hidden fixed inset-0 right-0 z-50 w-[88vw] max-w-[480px] border-l border-white/[0.06] overflow-hidden">
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            className="fixed inset-y-0 right-0 z-50 w-[88vw] max-w-[480px] bg-[#0d0f14] border-l border-white/[0.06] overflow-hidden lg:hidden"
+                        >
                             <PanelContent onClose={() => setMobileOpen(false)} />
                         </motion.div>
                     </>
                 }
             </AnimatePresence>
             <motion.aside
-                initial={{ width: 350 }}
-                animate={{ width: collapsed ? 52 : 350 }}
+                initial={{ width: 450 }}
+                animate={{ width: collapsed ? 52 : 450 }}
                 transition={{ duration: 0.25, ease: easeInOut }}
                 className="hidden shrink-0 lg:flex h-full flex-col overflow-hidden border-l border-white/[0.06] bg-[#0d0f14]"
             >

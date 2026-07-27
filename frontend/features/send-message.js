@@ -11,7 +11,11 @@ export const sendMessage = async (payload) => {
 
     } catch (error) {
         console.log("error in send -mess: ", error.message);
-        return [];
+        return {
+            answer: error.response?.data?.message || "Failed to send message",
+            images: [],
+            artifacts: []
+        };
 
     }
 }

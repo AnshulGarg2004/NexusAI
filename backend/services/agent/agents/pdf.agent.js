@@ -104,6 +104,10 @@ ${state.prompt}
 
 
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("error in geenrating pdf");
 
         return {

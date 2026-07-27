@@ -62,10 +62,14 @@ Rules:
 
         
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         console.log("error in pdf rag: ", error.message);
         return {
             ...state,
-            aiResponse : "❌Failed to generte response"
+            aiResponse : error?.data?.message  || "❌Failed to generte response"
         }
     } finally {
         await fs.unlinkSync(state.file.path);

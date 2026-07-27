@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {AnimatePresence, motion} from "motion/react"
 import { useEffect } from 'react';
 
@@ -9,7 +9,7 @@ const Loading = () => {
     const label = Thinking_Labels[labelIndex];
 
     useEffect(() => {
-        const interval = setTimeout(() => {
+        const interval = setInterval(() => {
             setLabelIndex((prev) => (prev+1) % Thinking_Labels.length )
         }, 1800);
 

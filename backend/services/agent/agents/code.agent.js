@@ -157,6 +157,10 @@ export const code = async (state) => {
             artifacts: []
         }
     } catch (error) {
+        if (error?.status === 429) {
+            throw error;
+        }
+
         return {
             ...state,
             aiResponse: error?.data?.message ||"❌Failed to generate code"
