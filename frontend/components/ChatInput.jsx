@@ -1,5 +1,5 @@
-import { Code2, FileText, Globe, Image, MessageSquare, Mic, Paperclip, Presentation, Send, X, Zap } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import { Code2, FileText, Globe, Image, MessageSquare, Mic, MicOff, Paperclip, Presentation, Send, Trash, X, Zap } from 'lucide-react'
+import React, { useEffect, useRef, useState } from 'react'
 import { sendMessage } from '../features/send-message';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage, setArtifacts, setIsLoading } from '../src/redux/messageSlice';
@@ -16,8 +16,53 @@ const ChatInput = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const fileRef = useRef(null)
     const dispatch = useDispatch();
+    const [listening, setListening] = useState(false);
+    const recognisionRef = useRef(null);
     const { selectedConversation, conversations } = useSelector(state => state.conversation)
-    const { messages, isLoading } = useSelector(state => state.message)
+    const { messages, isLoading } = useSelector(state => state.message);
+
+
+    useEffect(() => {
+        const SpeechRecognision = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if(!SpeechRecognision) {
+            return;
+        }
+        const recog = new SpeechRecognision();
+        recog.lang = 'en-us';
+        recog.interimResults = true;
+        recog.continuous = true;
+
+        recog.onresult = (event) => {
+            let transcript = '';
+            for(let i = event.resultIndex; i< event.results.length; i++) {
+                transcript += event.results[i][0].transcript;
+            }
+
+           setValue(transcript)
+            
+        }
+
+        recog.onend = () => {
+            setListening(false)
+        };
+        recognisionRef.current = recog;
+    }, []);
+
+    const toggleMic = () => {
+        if(!recognisionRef.current) {
+            alert("Mic function is not supported!😭")
+        }
+
+        if(listening) {
+            recognisionRef.current.stop();
+            setListening(false);
+        }
+        else {
+            recognisionRef.current.start();
+            setListening(true)
+        }
+    }
 
     const handleSendMessage = async () => {
         dispatch(setIsLoading(true))
@@ -172,8 +217,8 @@ const ChatInput = () => {
                             <Paperclip size={17} />
                         </button>
 
-                        <button className="flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/6 hover:bg-white/5 hover:text-slate-300">
-                            <Mic size={17} />
+                        <button onClick={toggleMic} className={`flex h-9 w-9 items-center justify-center rounded-lg border border-transparent ${listening ? " bg-red-500 text-white" : " text-slate-600 hover:bg-white/[0.06]"}`}>
+                           {listening ?  <Mic size={17} /> : <MicOff size={16} />}
                         </button>
                     </div>
 
